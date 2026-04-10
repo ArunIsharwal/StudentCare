@@ -16,6 +16,12 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+export const baseUrl =
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.VITE_URL ||
+  import.meta.env.URL ||
+  'http://localhost:8000';
+
 function App() {
   return (
     <BrowserRouter>
