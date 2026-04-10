@@ -1,0 +1,17 @@
+# ── Shared dependencies ──────────────────────────────────
+fastapi
+uvicorn
+pydantic
+python-multipart
+requests
+
+# ── Food Pipeline ────────────────────────────────────────
+google-cloud-vision
+google-api-core
+
+# ── Student Wellbeing ────────────────────────────────────
+pdfplumber
+easyocr
+pdf2image
+numpy
+Pillow

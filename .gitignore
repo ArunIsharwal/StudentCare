@@ -1,0 +1,17 @@
+# Secrets
+ml/food_pipeline/key.json
+
+# Virtual env
+ml/food_pipeline/venv/
+ml/.venv/
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Env files
+.env
+.env.local
+.env.example

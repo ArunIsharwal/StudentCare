@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  
+  --color-health-green: #34d399;
+  --color-health-green-light: #6ee7b7;
+  --color-health-blue: #38bdf8;
+  --color-health-blue-light: #7dd3fc;
+
+  --color-bg-light: #fafafa;
+  --color-bg-dark: #050505;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-light text-slate-900 antialiased selection:bg-primary-500 selection:text-white transition-colors duration-300;
+    /* Soft grid pattern for light mode */
+    background-image: 
+      radial-gradient(circle at center, #cbd5e1 1px, transparent 1px),
+      radial-gradient(circle at center, #cbd5e1 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: 0 0, 16px 16px;
+    background-color: #fafafa;
+  }
+  
+  .dark body {
+    @apply bg-bg-dark text-slate-50;
+    /* Neon grid pattern for dark mode */
+    background-image: 
+      radial-gradient(circle at center, rgba(255,255,255,0.05) 1px, transparent 1px),
+      radial-gradient(circle at center, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-color: #050505;
+  }
+}
+
+.glass-panel {
+  @apply bg-white/70 dark:bg-black/60 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)];
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary-500/10 dark:hover:border-white/20;
+}
+
+/* Stunning glowing text effect */
+.glow-text {
+  text-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
+}
+
+/* Beautiful animated mesh blob */
+@keyframes mesh-pulse {
+  0%, 100% {
+    transform: scale(1) translate(0px, 0px) rotate(0deg);
+  }
+  33% {
+    transform: scale(1.1) translate(30px, -50px) rotate(5deg);
+  }
+  66% {
+    transform: scale(0.9) translate(-20px, 30px) rotate(-5deg);
+  }
+}
+
+.blob {
+  animation: mesh-pulse 15s ease-in-out infinite alternate;
+}

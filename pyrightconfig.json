@@ -1,0 +1,9 @@
+{
+  "venvPath": "./ml",
+  "venv": ".venv",
+  "extraPaths": [
+    "./ml/food_pipeline",
+    "./ml/student_wellbeing",
+    "./ml"
+  ]
+}

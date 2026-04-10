@@ -1,0 +1,8 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/ml/.venv/Scripts/python.exe",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/ml",
+    "${workspaceFolder}/ml/food_pipeline",
+    "${workspaceFolder}/ml/student_wellbeing"
+  ]
+}
