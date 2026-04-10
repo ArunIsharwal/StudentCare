@@ -1,2 +1,9 @@
+# Secrets
 ml/food_pipeline/key.json
+
+# Virtual env
 ml/food_pipeline/venv/
+
+# Python cache (IMPORTANT)
+__pycache__/
+*.pyc
