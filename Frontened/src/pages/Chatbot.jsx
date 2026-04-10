@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Bot, User, Loader2, Sparkles } from 'lucide-react';
+import { Send, Bot, User, Loader2, Sparkles, X, RotateCcw } from 'lucide-react';
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([
-    { id: 1, type: 'bot', text: "Hi there! I'm VitalityAI, your personal health companion. You can ask me about your diet, workouts, or stress management." }
+    { id: 1, type: 'bot', text: "Hello! I'm StudentCar. I can help you with nutrition, exercise, and mental wellness. What's on your mind?" }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -20,24 +20,21 @@ const Chatbot = () => {
 
   const handleSend = (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isTyping) return;
 
     const userMessage = { id: Date.now(), type: 'user', text: input };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsTyping(true);
 
-    // Simulate AI response
     setTimeout(() => {
-      let aiResponseText = "That's a great question! Based on your health data, I'd recommend ensuring you stay hydrated and keep a balanced diet.";
-      
+      let aiResponseText = "That's an interesting point! To give you the best advice, should we focus on your nutrition or your daily activity levels?";
       const lowerInput = userMessage.text.toLowerCase();
-      if (lowerInput.includes("healthy") && lowerInput.includes("diet")) {
-        aiResponseText = "Your current diet is looking good, but you could increase your protein intake based on your recent activity levels.";
-      } else if (lowerInput.includes("eat")) {
-        aiResponseText = "A grilled chicken salad or a quinoa bowl would be perfect for your nutritional goals right now.";
-      } else if (lowerInput.includes("stress")) {
-        aiResponseText = "Take a deep breath. Try the 4-7-8 breathing technique: inhale for 4 seconds, hold for 7, and exhale for 8. Let's do a 5-minute meditation later.";
+
+      if (lowerInput.includes("diet") || lowerInput.includes("eat")) {
+        aiResponseText = "Focusing on high-fiber foods and lean proteins will keep your energy stable throughout your study sessions. Would you like a meal suggestion?";
+      } else if (lowerInput.includes("stress") || lowerInput.includes("tired")) {
+        aiResponseText = "I understand. When feeling overwhelmed, try the 4-7-8 breathing technique: Inhale for 4s, hold for 7s, exhale for 8s. It resets your nervous system instantly.";
       }
 
       setMessages(prev => [...prev, { id: Date.now(), type: 'bot', text: aiResponseText }]);
@@ -45,90 +42,104 @@ const Chatbot = () => {
     }, 1500);
   };
 
+  const clearChat = () => {
+    setMessages([{ id: 1, type: 'bot', text: "Chat reset. How can I help you now?" }]);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-140px)] flex flex-col">
-      <div className="text-center mb-6">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2 flex items-center justify-center gap-3">
-          <Bot className="text-primary-500" size={32} />
-          VitalityAI Assistant
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400">Ask any health, diet, or wellness questions.</p>
+    <div className="flex flex-col h-[calc(100vh-120px)] max-w-3xl mx-auto px-4 py-4">
+      
+      {/* 1. Header Area */}
+      <div className="flex items-center justify-between mb-6 px-2">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-slate-900 shadow-lg">
+            <Bot size={28} />
+          </div>
+          <div>
+            <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">StudentCare</h1>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Assistant</span>
+            </div>
+          </div>
+        </div>
+        <button 
+          onClick={clearChat}
+          className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
+          title="Reset Conversation"
+        >
+          <RotateCcw size={20} />
+        </button>
       </div>
 
-      <div className="flex-grow glass-panel rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden shadow-2xl">
-        {/* Chat Area */}
-        <div className="flex-grow overflow-y-auto p-6 space-y-6">
-          <AnimatePresence>
+      {/* 2. Chat Area */}
+      <div className="flex-grow bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none flex flex-col overflow-hidden relative">
+        
+        <div className="flex-grow overflow-y-auto p-6 space-y-8 scroll-smooth">
+          <AnimatePresence initial={false}>
             {messages.map((msg) => (
               <motion.div
                 key={msg.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex gap-4 max-w-[80%] ${msg.type === 'user' ? 'ml-auto flex-row-reverse' : ''}`}
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                  msg.type === 'user' ? 'bg-primary-500 text-white' : 'bg-gradient-to-br from-health-green to-health-blue text-white shadow-lg'
-                }`}>
-                  {msg.type === 'user' ? <User size={20} /> : <Bot size={20} />}
-                </div>
-                <div className={`p-4 rounded-2xl ${
+                <div className={`max-w-[85%] md:max-w-[75%] p-4 md:p-5 rounded-3xl text-sm md:text-base leading-relaxed shadow-sm ${
                   msg.type === 'user' 
-                    ? 'bg-primary-500 text-white rounded-tr-none' 
-                    : 'bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-tl-none shadow-sm'
+                    ? 'bg-slate-900 text-white rounded-tr-none' 
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
                 }`}>
-                  <p className="leading-relaxed">{msg.text}</p>
+                  {msg.text}
                 </div>
               </motion.div>
             ))}
+            
             {isTyping && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex gap-4 max-w-[80%]"
-              >
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-health-green to-health-blue text-white flex items-center justify-center shrink-0 shadow-lg">
-                  <Bot size={20} />
-                </div>
-                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-tl-none flex items-center gap-2 text-slate-500">
-                  <Loader2 size={16} className="animate-spin" />
-                  AI is thinking...
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+                <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-3xl rounded-tl-none flex items-center gap-3">
+                  <div className="flex gap-1">
+                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" />
+                  </div>
+                  <span className="text-xs font-bold text-slate-400 uppercase">StudentCare is typing</span>
                 </div>
               </motion.div>
             )}
-            <div ref={messagesEndRef} />
           </AnimatePresence>
+          <div ref={messagesEndRef} />
         </div>
 
-        {/* Suggested Prompts */}
-        <div className="px-6 pb-2 flex gap-2 overflow-x-auto hide-scrollbar">
-          {["Is my diet healthy?", "What should I eat today?", "How to reduce stress?"].map((prompt, i) => (
-            <button
-              key={i}
-              onClick={() => setInput(prompt)}
-              className="whitespace-nowrap px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm text-slate-600 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-700"
-            >
-              <Sparkles size={14} className="inline mr-1 text-primary-500" />
-              {prompt}
-            </button>
-          ))}
-        </div>
+        {/* 3. Input & Suggestion Area */}
+        <div className="p-4 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md border-t border-slate-100 dark:border-slate-800">
+          
+          <div className="flex gap-2 overflow-x-auto pb-4 px-2 no-scrollbar">
+            {["Analyze my diet", "Reduce stress", "Workout plan"].map((prompt) => (
+              <button
+                key={prompt}
+                onClick={() => setInput(prompt)}
+                className="shrink-0 px-4 py-2 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 hover:border-blue-500 transition-all shadow-sm"
+              >
+                <Sparkles size={12} className="inline mr-1.5 text-blue-500" />
+                {prompt}
+              </button>
+            ))}
+          </div>
 
-        {/* Input Area */}
-        <div className="p-4 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-t border-slate-200 dark:border-slate-800">
-          <form onSubmit={handleSend} className="relative flex items-center">
+          <form onSubmit={handleSend} className="relative group">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask me anything..."
-              className="w-full pl-6 pr-16 py-4 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-shadow shadow-sm dark:text-white"
+              placeholder="Message StudentCar..."
+              className="w-full pl-6 pr-14 py-5 rounded-[2rem] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all dark:text-white text-base shadow-inner"
             />
             <button
               type="submit"
               disabled={!input.trim() || isTyping}
-              className="absolute right-2 w-10 h-10 flex items-center justify-center bg-primary-500 hover:bg-primary-600 text-white rounded-full transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="absolute right-2 top-2 bottom-2 aspect-square flex items-center justify-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full transition-all active:scale-90 disabled:opacity-20"
             >
-              <Send size={18} className={input.trim() ? "ml-0.5" : ""} />
+              <Send size={18} />
             </button>
           </form>
         </div>

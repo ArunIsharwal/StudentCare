@@ -54,10 +54,10 @@ const Login = () => {
         <div className="glass-panel p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-              Welcome Back
+              Welcome back
             </h2>
             <p className="text-slate-600 dark:text-slate-400">
-              Enter your details to access your dashboard.
+              Sign in to continue to your dashboard.
             </p>
           </div>
 
@@ -110,7 +110,7 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full py-3 px-4 flex items-center justify-center gap-2 bg-gradient-to-r from-health-blue to-primary-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-primary-500/30 transition-all active:scale-[0.98]"
+              className="w-full py-3 px-4 flex items-center justify-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-medium hover:opacity-90 transition-all active:scale-[0.98]"
             >
               Sign In <ArrowRight size={18} />
             </button>

@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
+import Footer from './Footer';
 
 const Layout = () => {
   return (
@@ -8,11 +9,7 @@ const Layout = () => {
       <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Outlet />
       </main>
-      <footer className="py-6 border-t border-slate-200 dark:border-slate-800 mt-auto text-center">
-        <p className="text-slate-500 dark:text-slate-400 text-sm">
-          &copy; {new Date().getFullYear()} StudentCare Student Health Companion. All rights reserved.
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 };

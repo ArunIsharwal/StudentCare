@@ -32,7 +32,7 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="food-analysis" element={<FoodAnalysis />} />
           <Route path="weather" element={<WeatherAQI />} />
-          <Route path="chatbot" element={<Chatbot />} />
+          
           <Route 
             path="dashboard" 
             element={
@@ -42,6 +42,7 @@ function App() {
             } 
           />
           <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="chatbot" element={<Chatbot />} />
         </Route>
       </Routes>
     </BrowserRouter>

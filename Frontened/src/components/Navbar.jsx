@@ -41,10 +41,10 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="bg-gradient-to-br from-health-green to-health-blue p-2 rounded-xl text-white group-hover:shadow-lg group-hover:shadow-health-blue/20 transition-all duration-300">
+              <div className="bg-slate-900 dark:bg-white p-2 rounded-xl text-white dark:text-slate-900 transition-all duration-300">
                 <Activity size={24} />
               </div>
-              <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-health-green to-health-blue">
+              <span className="font-bold text-xl text-slate-900 dark:text-white">
                 StudentCare
               </span>
             </Link>
@@ -61,7 +61,7 @@ const Navbar = () => {
                   to={item.path}
                   className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                     isActive
-                      ? 'bg-health-blue/10 text-health-blue dark:bg-health-blue/20 dark:text-health-blue-light'
+                      ? 'bg-slate-200 text-slate-900 dark:bg-slate-700 dark:text-white'
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
                   }`}
                 >
@@ -97,7 +97,7 @@ const Navbar = () => {
                   </Link>
                   <Link
                     to="/register"
-                    className="text-sm font-medium bg-gradient-to-r from-health-blue to-primary-600 text-white px-4 py-2 rounded-lg hover:shadow-lg hover:shadow-primary-500/30 transition-all duration-300"
+                    className="text-sm font-medium bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-2 rounded-lg hover:opacity-90 transition-all duration-300"
                   >
                     Get Started
                   </Link>
