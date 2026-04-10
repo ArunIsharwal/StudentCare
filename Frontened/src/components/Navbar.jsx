@@ -1,14 +1,17 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
 import { Activity, Leaf, Wind, MessageSquare, Menu, X, User } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
+import { baseUrl } from '../App';
 
 const Navbar = () => {
   const { isAuthenticated, user } = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
@@ -18,8 +21,18 @@ const Navbar = () => {
     { name: 'Assistant', path: '/chatbot', icon: <MessageSquare size={18} />, reqAuth: false },
   ];
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    try {
+      await axios.get(`${baseUrl}/api/auth/logout`, {
+        withCredentials: true,
+      });
+    } catch (error) {
+      console.log(error.response?.data?.message || error.message);
+    } finally {
+      dispatch(logout());
+      setIsOpen(false);
+      navigate('/login');
+    }
   };
 
   return (
@@ -151,6 +164,20 @@ const Navbar = () => {
                   >
                     Get Started
                   </Link>
+                </div>
+              )}
+
+              {isAuthenticated && (
+                <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+                  <span className="px-3 py-2 text-sm font-medium text-slate-500 dark:text-slate-400">
+                    Signed in as {user?.name}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="block text-left px-3 py-2 text-base font-medium text-red-500"
+                  >
+                    Logout
+                  </button>
                 </div>
               )}
             </div>
