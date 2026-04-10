@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
-import { Activity, Apple, Wind, Brain, ChevronUp, Users, MessageSquare, Search, MoreVertical, Flame } from 'lucide-react';
+import { Activity, Apple, Wind, Brain, ChevronUp, Users, MessageSquare, Search, MoreVertical, Flame, Sparkles } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useSelector(state => state.auth);
