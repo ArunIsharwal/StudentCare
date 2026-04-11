@@ -216,9 +216,3 @@ http://localhost:5173
 
 ---
 
-
-* Diet 🍱
-* Academic workload 📚
-* Environment 🌫️
-
-…and provides **real-time intelligent guidance** to improve both **health and productivity**.
