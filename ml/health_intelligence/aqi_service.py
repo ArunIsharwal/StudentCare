@@ -10,7 +10,9 @@ from typing import Optional
 
 import requests
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -350,13 +352,14 @@ class AQIService:
             if max_val > 0 and (diff / max_val) > 0.20:
                 inconsistency_flag = f"High variance between sources (>20%). WAQI: {waqi_val}, Open-Meteo: {meteo_val}."
             
-            selected_data = waqi_data
-        elif waqi_fresh:
-            selected_data = waqi_data
-            inconsistency_flag = "Secondary validation failed (Open-Meteo stale/unavailable)."
+            # User specifically requested Open-Meteo's result to be the primary one displayed
+            selected_data = meteo_data
         elif meteo_fresh:
             selected_data = meteo_data
-            inconsistency_flag = "Primary WAQI data stale/unavailable. Falling back to Open-Meteo."
+            inconsistency_flag = "WAQI data stale/unavailable. Playing safely with Open-Meteo."
+        elif waqi_fresh:
+            selected_data = waqi_data
+            inconsistency_flag = "Open-Meteo unavailable. Falling back to WAQI."
         else:
             return {
                 "aqi": None,
@@ -436,6 +439,14 @@ def prompt_for_place():
 
 app = FastAPI(title="AQI Service API")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/aqi")
 def get_aqi_endpoint(
     lat: Optional[float] = None, 
@@ -468,6 +479,72 @@ def get_aqi_endpoint(
 
     report = AQIService.get_reliable_aqi(location, token)
     return report
+
+class HealthScoreRequest(BaseModel):
+    aqi: int
+    calories: int
+    sleep: Optional[float] = None
+    steps: Optional[int] = None
+    hydration: Optional[int] = None
+
+def calculate_aqi_score(aqi: int) -> int:
+    if 0 <= aqi <= 50: return 100
+    elif 51 <= aqi <= 100: return 80
+    elif 101 <= aqi <= 150: return 60
+    elif 151 <= aqi <= 200: return 40
+    elif 201 <= aqi <= 300: return 20
+    else: return 10
+
+def calculate_calorie_score(calories: int) -> int:
+    if 1800 <= calories <= 2200: return 100
+    elif 1500 <= calories <= 1799 or 2201 <= calories <= 2500: return 80
+    elif 1200 <= calories <= 1499 or 2501 <= calories <= 3000: return 60
+    else: return 40
+
+def calculate_health_score(aqi: int, calories: int, **kwargs) -> dict:
+    if not (0 <= aqi <= 500):
+        raise ValueError("AQI must be between 0 and 500")
+    if calories <= 0:
+        raise ValueError("Calories must be greater than 0")
+
+    aqi_score = calculate_aqi_score(aqi)
+    calorie_score = calculate_calorie_score(calories)
+    health_score = round((0.4 * aqi_score) + (0.6 * calorie_score))
+
+    if 80 <= health_score <= 100: category = "Excellent"
+    elif 60 <= health_score <= 79: category = "Good"
+    elif 40 <= health_score <= 59: category = "Moderate"
+    else: category = "Poor"
+
+    result = {
+        "health_score": health_score,
+        "category": category,
+        "details": {
+            "aqi_score_component": aqi_score,
+            "calorie_score_component": calorie_score
+        }
+    }
+    if kwargs:
+        result["additional_metrics_received"] = list(kwargs.keys())
+    return result
+
+@app.post("/health_score")
+def generate_health_score_post(request: HealthScoreRequest):
+    try:
+        extra_metrics = {k: v for k, v in request.model_dump().items() if k not in ["aqi", "calories"] and v is not None}
+        return calculate_health_score(request.aqi, request.calories, **extra_metrics)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/health_score")
+def generate_health_score_get(
+    aqi: int = Query(..., description="Air Quality Index value (0-500)"), 
+    calories: int = Query(..., description="Total daily calorie intake (kcal)")
+):
+    try:
+        return calculate_health_score(aqi, calories)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 def resolve_location(args):

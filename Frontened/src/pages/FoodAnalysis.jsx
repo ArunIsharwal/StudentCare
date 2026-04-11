@@ -4,42 +4,67 @@ import { Camera, Image as ImageIcon, Upload, Loader2, Sparkles, CheckCircle2, Ap
 
 const FoodAnalysis = () => {
   const [image, setImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImage(URL.createObjectURL(file));
+      setImageFile(file);
       setResult(null);
+      setError(null);
     }
   };
 
-  const analyzeFood = () => {
+  const analyzeFood = async () => {
+    if (!imageFile) return;
+
     setIsAnalyzing(true);
-    setTimeout(() => {
-      setIsAnalyzing(false);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', imageFile);
+
+      const response = await fetch('http://127.0.0.1:8001/api/food/analyze', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to analyze the image');
+      }
+
+      const data = await response.json();
+      
       setResult({
-        name: "Grilled Chicken Salad",
-        calories: 320,
+        name: data.food || "Unknown Food",
+        calories: data.calories || 0,
         nutrition: {
-          protein: { value: 35, unit: "g", percent: 70 },
-          carbs: { value: 12, unit: "g", percent: 10 },
-          fat: { value: 15, unit: "g", percent: 20 }
+          protein: { value: data.protein || 0, unit: "g", percent: Math.min(100, (data.protein || 0) * 1.5) },
+          carbs: { value: data.carbs || 0, unit: "g", percent: Math.min(100, (data.carbs || 0) * 1.5) },
+          fat: { value: data.fat || 0, unit: "g", percent: Math.min(100, (data.fat || 0) * 2) }
         },
-        healthScore: 95,
+        healthScore: data.confidence ? Math.round(data.confidence * 100) : 85,
         suggestions: [
-          "Great source of lean protein!",
-          "Consider adding a light vinaigrette instead of creamy dressing.",
-          "Perfect post-workout meal."
+          "Estimated based on AI image recognition.",
+          "Results are intended for guidance only.",
+          "Maintain a balanced diet for best health."
         ]
       });
-    }, 2000);
+    } catch (err) {
+      console.error(err);
+      setError('An error occurred during analysis. Make sure the backend is running.');
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   return (
-    // min-h-screen ensures the page is at least full height
-    // py-12 adds breathing room at top and bottom
+    
     <div className="min-h-screen w-full bg-slate-50 dark:bg-slate-950 py-12 px-4 flex flex-col items-center">
       <div className="max-w-5xl w-full space-y-10">
         
@@ -73,13 +98,19 @@ const FoodAnalysis = () => {
                     <img src={image} alt="Food" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
                     <button 
-                      onClick={() => {setImage(null); setResult(null);}}
+                      onClick={() => {setImage(null); setImageFile(null); setResult(null); setError(null);}}
                       className="absolute top-4 right-4 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-3 rounded-2xl shadow-xl hover:scale-110 transition-transform"
+                      title="Clear Image"
                     >
                       <Upload size={20} />
                     </button>
                   </div>
                   
+                  {error && (
+                    <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/50 rounded-xl text-sm font-medium text-center">
+                      {error}
+                    </div>
+                  )}
                   <button 
                     onClick={analyzeFood}
                     disabled={isAnalyzing}
@@ -185,6 +216,13 @@ const FoodAnalysis = () => {
                     ))}
                   </ul>
                 </div>
+
+                <button 
+                  onClick={() => {setImage(null); setImageFile(null); setResult(null); setError(null);}}
+                  className="w-full py-4 mt-8 flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-2xl font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700"
+                >
+                  <Camera size={18} /> Analyze Another Meal
+                </button>
               </motion.div>
             ) : (
               <div className="h-64 flex flex-col items-center justify-center text-slate-400 text-center space-y-4">

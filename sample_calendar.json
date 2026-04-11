@@ -1,0 +1,44 @@
+[
+  {
+    "event_name": "Midsemester Examination",
+    "start_date": "2026-04-15",
+    "end_date": "2026-04-20",
+    "event_type": "exam"
+  },
+  {
+    "event_name": "Project Submission Deadline",
+    "start_date": "2026-04-25",
+    "end_date": "2026-04-25",
+    "event_type": "deadline"
+  },
+  {
+    "event_name": "Lab Session 1",
+    "start_date": "2026-04-10",
+    "end_date": "2026-04-10",
+    "event_type": "lab"
+  },
+  {
+    "event_name": "Cultural Festival",
+    "start_date": "2026-04-18",
+    "end_date": "2026-04-19",
+    "event_type": "event"
+  },
+  {
+    "event_name": "Summer Vacation",
+    "start_date": "2026-05-01",
+    "end_date": "2026-06-30",
+    "event_type": "holiday"
+  },
+  {
+    "event_name": "Assignment 2 Due",
+    "start_date": "2026-04-22",
+    "end_date": "2026-04-22",
+    "event_type": "deadline"
+  },
+  {
+    "event_name": "Workshop on AI",
+    "start_date": "2026-04-12",
+    "end_date": "2026-04-12",
+    "event_type": "event"
+  }
+]

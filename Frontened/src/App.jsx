@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import FoodAnalysis from './pages/FoodAnalysis';
 import WeatherAQI from './pages/WeatherAQI';
 import Chatbot from './pages/Chatbot';
+import StressMonitoring from './pages/StressMonitoring';
 
 // Protected Route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -32,6 +33,7 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="food-analysis" element={<FoodAnalysis />} />
           <Route path="weather" element={<WeatherAQI />} />
+          <Route path="stress-monitoring" element={<StressMonitoring />} />
           
           <Route 
             path="dashboard" 

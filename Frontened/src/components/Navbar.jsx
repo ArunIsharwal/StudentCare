@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
-import { Activity, Leaf, Wind, MessageSquare, Menu, X, User } from 'lucide-react';
+import { Activity, Leaf, Wind, MessageSquare, Menu, X, User, Brain } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
@@ -18,6 +18,7 @@ const Navbar = () => {
     { name: 'Dashboard', path: '/dashboard', icon: <Activity size={18} />, reqAuth: true },
     { name: 'Food AI', path: '/food-analysis', icon: <Leaf size={18} />, reqAuth: false },
     { name: 'Air Quality', path: '/weather', icon: <Wind size={18} />, reqAuth: false },
+    { name: 'Stress', path: '/stress-monitoring', icon: <Brain size={18} />, reqAuth: false },
     { name: 'Assistant', path: '/chatbot', icon: <MessageSquare size={18} />, reqAuth: false },
   ];
 

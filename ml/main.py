@@ -15,12 +15,16 @@ for path in [FOOD_PIPELINE_DIR, ML_DIR, ROOT_DIR]:
 
 # ── Imports ───────────────────────────────────────────────────────────────────
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 # food_pipeline uses internal `from app.services...` — works because FOOD_PIPELINE_DIR is in sys.path
 from app.routes.food import router as food_router
 
 # student_wellbeing is a proper package under ml/
 from student_wellbeing.app.routes.stress import router as stress_router
+
+# health_intelligence 
+from health_intelligence.aqi_service import app as aqi_app
 
 # ── App ───────────────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -29,8 +33,17 @@ app = FastAPI(
     description="Unified ML backend: Food Analysis + Student Wellbeing"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(food_router, prefix="/api")        # → /api/food/ and /api/food/analyze
 app.include_router(stress_router)                     # → /api/student-wellbeing/stress/*
+app.mount("/health-intelligence", aqi_app)            # → /health-intelligence/aqi, /health-intelligence/health_score
 
 @app.get("/", tags=["Health"])
 def root():
@@ -41,6 +54,8 @@ def root():
             "food":             "/api/food/",
             "food_analyze":     "/api/food/analyze",
             "stress":           "/api/student-wellbeing/stress/",
-            "stress_analyze":   "/api/student-wellbeing/stress/analyze"
+            "stress_analyze":   "/api/student-wellbeing/stress/analyze",
+            "health_aqi":       "/health-intelligence/aqi",
+            "health_score":     "/health-intelligence/health_score"
         }
     }
